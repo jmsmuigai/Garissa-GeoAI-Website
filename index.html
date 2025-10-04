@@ -3,190 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Garissa GeoAI - Live Dashboard</title>
+    <title>Garissa GeoAI - A New Vision</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --vscode-bg: #1a1a1a;
-            --vscode-sidebar: #212121;
-            --vscode-header: #2c2c2c;
-            --vscode-active: #00aaff;
-            --vscode-text: #e0e0e0;
-            --vscode-accent: #00c6ff;
-            --vscode-green: #42f5b0;
-            --vscode-yellow: #fce883;
-            --vscode-orange: #ffae57;
-            --vscode-red: #ff6b6b;
-            --glow-color: rgba(0, 200, 255, 0.5);
+            --vscode-bg: #1e1e1e;
+            --vscode-sidebar: #252526;
+            --vscode-header: #333333;
+            --vscode-active: #007acc;
+            --vscode-text: #cccccc;
+            --vscode-accent: #569cd6;
+            --vscode-green: #4ec9b0;
+            --vscode-yellow: #dcdcaa;
+            --garissa-blue: #3A86FF;
+            --garissa-green: #7FB069;
+            --font-header: 'Montserrat', sans-serif;
             --font-body: 'Roboto', sans-serif;
-            --font-display: 'Orbitron', sans-serif;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            background-color: var(--vscode-bg);
-            color: var(--vscode-text);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-            font-family: var(--font-body);
-        }
+        body { background-color: var(--vscode-bg); color: var(--vscode-text); display: flex; height: 100vh; overflow: hidden; font-family: var(--font-body); }
 
-        #bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        #bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.7; }
 
-        .sidebar {
-            width: 260px;
-            background-color: var(--vscode-sidebar);
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #444;
-            z-index: 10;
-        }
-
-        .logo {
-            padding: 20px 15px;
-            text-align: center;
-            border-bottom: 1px solid #444;
-            background: linear-gradient(135deg, var(--vscode-active), var(--vscode-green));
-            color: white;
-        }
-        .logo h1 { font-family: var(--font-display); font-size: 1.3rem; text-shadow: 0 0 5px var(--glow-color); }
+        .sidebar { width: 260px; background-color: var(--vscode-sidebar); display: flex; flex-direction: column; border-right: 1px solid #444; z-index: 10; }
+        .logo { padding: 15px; text-align: center; border-bottom: 1px solid #444; background: linear-gradient(135deg, var(--garissa-blue), var(--garissa-green)); color: white; }
+        .logo h1 { font-family: var(--font-header); font-size: 1.2rem; margin-bottom: 5px; }
         .logo p { font-size: 0.8rem; opacity: 0.9; }
 
         .sidebar-section { padding: 15px; border-bottom: 1px solid #444; }
-        .sidebar-section h3 { font-family: var(--font-display); font-size: 0.9rem; margin-bottom: 10px; color: var(--vscode-accent); display: flex; align-items: center; gap: 8px; }
+        .sidebar-section h3 { font-family: var(--font-header); font-size: 0.9rem; margin-bottom: 10px; color: var(--vscode-accent); display: flex; align-items: center; gap: 8px; }
         .sidebar-section ul { list-style: none; }
         .sidebar-section li { padding: 8px 12px; margin-bottom: 5px; border-radius: 3px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         .sidebar-section li:hover { background-color: #444; }
-        .sidebar-section li.active { background-color: var(--vscode-active); color: white; box-shadow: 0 0 10px var(--glow-color); }
+        .sidebar-section li.active { background-color: var(--vscode-active); color: white; }
 
         .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-
-        .marquee {
-            background-color: var(--vscode-header);
-            padding: 8px;
-            color: var(--vscode-green);
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            border-bottom: 1px solid #444;
-        }
-        .marquee-content { display: inline-block; padding-left: 100%; animation: marquee 30s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-
         .tabs { display: flex; background-color: #2d2d2d; border-bottom: 1px solid #444; flex-shrink: 0; }
         .tab { padding: 10px 20px; background-color: #2d2d2d; border-right: 1px solid #444; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
-        .tab.active { background-color: var(--vscode-bg); color: white; border-bottom: 2px solid var(--vscode-active); text-shadow: 0 0 5px var(--glow-color); }
+        .tab.active { background-color: var(--vscode-bg); color: white; border-bottom: 2px solid var(--vscode-active); }
 
         .editor { flex: 1; overflow-y: auto; background-color: transparent; }
         .editor-pane { padding: 20px; display: none; }
         .editor-pane.active { display: block; animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .content-container { max-width: 1200px; margin: 0 auto; background-color: rgba(30, 30, 30, 0.85); backdrop-filter: blur(10px); border-radius: 8px; padding: 20px; }
-        
-        /* Dashboard */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .chart-card {
-            background: rgba(40, 40, 40, 0.7);
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #444;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .chart-card:hover { transform: translateY(-5px); box-shadow: 0 0 15px rgba(0,0,0,0.4); }
-        .chart-card h3 { font-family: var(--font-display); text-align: center; margin-bottom: 15px; color: var(--vscode-accent); }
+        .content-container { max-width: 1000px; margin: 0 auto; background-color: rgba(30, 30, 30, 0.85); backdrop-filter: blur(10px); border-radius: 8px; padding: 30px; }
 
-        /* Blog Post Styling */
+        .welcome-header { margin-bottom: 30px; text-align: center; }
+        .welcome-header h1 { font-family: var(--font-header); font-size: 2.8rem; margin-bottom: 10px; background: linear-gradient(135deg, var(--garissa-blue), var(--garissa-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .welcome-header p { font-size: 1.2rem; color: var(--vscode-text); opacity: 0.8; }
+
+        .infographic-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-bottom: 40px; }
+        .info-card { background-color: #252526; padding: 25px; border-radius: 8px; transition: transform 0.3s, box-shadow 0.3s; border-left: 4px solid transparent; }
+        .info-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .info-card h3 { font-family: var(--font-header); margin-bottom: 15px; color: var(--vscode-accent); display: flex; align-items: center; gap: 10px; font-size: 1.2rem; }
+        .info-card p { margin-bottom: 10px; font-size: 0.95rem; line-height: 1.6; opacity: 0.9; }
+        .card-blue { border-left-color: var(--garissa-blue); }
+        .card-green { border-left-color: var(--garissa-green); }
+
+        /* Mini Dashboard */
+        .dashboard-section { margin-top: 40px; padding-top: 30px; border-top: 1px solid #444; }
+        .dashboard-section h2 { font-family: var(--font-header); text-align: center; margin-bottom: 10px; font-size: 1.8rem; color: var(--vscode-text); }
+        .dashboard-section .subtitle { text-align: center; margin-bottom: 30px; opacity: 0.8; }
+        .mini-dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-items: center; }
+        .chart-card { background: rgba(40, 40, 40, 0.7); padding: 20px; border-radius: 8px; border: 1px solid #444; }
+        .chart-card h3 { font-family: var(--font-header); text-align: center; margin-bottom: 15px; color: var(--vscode-accent); font-size: 1.1rem; }
+
         .blog-content { color: var(--vscode-text); line-height: 1.7; }
-        .blog-content h1, .blog-content h2 { font-family: var(--font-display); color: var(--vscode-accent); border-bottom: 1px solid #444; padding-bottom: 5px; }
-        .blog-content blockquote { border-left: 4px solid var(--vscode-green); margin: 20px 0; padding: 10px 20px; background-color: rgba(0,0,0,0.2); font-style: italic; }
-        .blog-content a { color: var(--vscode-active); text-decoration: none; }
+        .blog-content h1, .blog-content h2 { font-family: var(--font-header); color: var(--vscode-accent); border-bottom: 1px solid #444; padding-bottom: 5px; }
+        .blog-content blockquote { border-left: 4px solid var(--garissa-green); margin: 20px 0; padding: 10px 20px; background-color: rgba(0,0,0,0.1); font-style: italic; }
+        .blog-content a { color: var(--garissa-blue); text-decoration: none; }
 
         .footer { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: var(--vscode-header); border-top: 1px solid #444; flex-shrink: 0; }
         .status-item { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; }
 
-        /* Chatbot */
-        #chat-toggle { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: linear-gradient(135deg, var(--vscode-active), var(--vscode-green)); color: white; border-radius: 50%; border: none; cursor: pointer; font-size: 1.8rem; display: flex; justify-content: center; align-items: center; z-index: 1001; box-shadow: 0 0 20px var(--glow-color); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 var(--glow-color); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 200, 255, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 200, 255, 0); } }
-        
-        #chat-container { position: fixed; bottom: 90px; right: 20px; width: 350px; height: 450px; background: var(--vscode-sidebar); border-radius: 10px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; z-index: 1000; transform: scale(0); transform-origin: bottom right; transition: transform 0.3s ease-out; }
-        #chat-container.open { transform: scale(1); }
-        .chat-header { padding: 15px; background: var(--vscode-header); border-top-left-radius: 10px; border-top-right-radius: 10px; font-weight: bold; font-family: var(--font-display); }
-        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .chat-message { padding: 8px 12px; border-radius: 15px; max-width: 80%; line-height: 1.4; }
-        .chat-message.user { background: var(--vscode-active); color: white; align-self: flex-end; border-bottom-right-radius: 3px; }
-        .chat-message.bot { background: #444; color: var(--vscode-text); align-self: flex-start; border-bottom-left-radius: 3px; }
-        .chat-input { display: flex; padding: 10px; border-top: 1px solid #444; }
-        .chat-input input { flex: 1; background: #3c3c3c; border: 1px solid #555; border-radius: 20px; padding: 10px 15px; color: white; }
-        .chat-input button { background: none; border: none; color: var(--vscode-active); font-size: 1.5rem; cursor: pointer; margin-left: 10px; }
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .infographic-grid, .mini-dashboard-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
     <canvas id="bg-canvas"></canvas>
     <div class="sidebar">
         <div class="logo">
-            <h1>Garissa GeoAI</h1>
-            <p>Live Operations</p>
+            <h1>GeoAI for Garissa</h1>
+            <p>A Resilient Future</p>
         </div>
         <div class="sidebar-section">
-            <h3><i class="fas fa-satellite-dish"></i> Monitoring</h3>
+            <h3><i class="fas fa-play-circle"></i> Project</h3>
             <ul>
-                <li class="active"><i class="fas fa-chart-pie"></i> Dashboard</li>
-                <li><i class="fas fa-map-marked-alt"></i> Live Map</li>
-                <li><i class="fas fa-bell"></i> Alerts</li>
-            </ul>
-        </div>
-        <div class="sidebar-section">
-            <h3><i class="fas fa-cogs"></i> Project Files</h3>
-            <ul>
-                <li><i class="fab fa-react"></i> dashboard.jsx</li>
-                <li><i class="fab fa-python"></i> model_v2.py</li>
-                <li><i class="fas fa-database"></i> population_data.csv</li>
+                <li class="active"><i class="fas fa-file"></i> Welcome.md</li>
+                <li><i class="fab fa-markdown"></i> Founder's Vision.md</li>
             </ul>
         </div>
     </div>
     
     <div class="main-content">
-        <div class="marquee"><div class="marquee-content">
-            <span>[LIVE] Water quality sensor WQ-14 reports normal levels...</span>
-            <span style="color: var(--vscode-yellow); margin-left: 50px;">[ALERT] High traffic volume detected near Sector 4...</span>
-            <span style="margin-left: 50px;">[UPDATE] Cholera case predictions updated for Iftin ward...</span>
-            <span style="color: var(--vscode-red); margin-left: 50px;">[CRITICAL] Power outage reported at main water pump...</span>
-        </div></div>
         <div class="tabs">
-            <div class="tab active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Live Dashboard</div>
+            <div class="tab active" data-tab="welcome"><i class="fas fa-star"></i> Welcome</div>
             <div class="tab" data-tab="blog"><i class="fab fa-markdown"></i> Founder's Vision.md</div>
         </div>
         
         <div class="editor">
-            <div id="dashboard" class="editor-pane active">
+            <div id="welcome" class="editor-pane active">
                 <div class="content-container">
-                    <div class="dashboard-grid">
-                        <div class="chart-card">
-                            <h3>Resource Allocation</h3>
-                            <canvas id="resourceChart"></canvas>
+                    <div class="welcome-header">
+                        <h1>GeoAI for a Resilient Garissa</h1>
+                        <p>Transforming crisis response from reactive to predictive through intelligent, data-driven insights.</p>
+                    </div>
+                    
+                    <div class="infographic-grid">
+                        <div class="info-card card-blue">
+                            <h3><i class="fas fa-satellite-dish"></i> The Challenge</h3>
+                            <p>Historically, crises were managed through delayed phone reports and manual mapping, leading to slow response times and an escalation of emergencies like cholera outbreaks.</p>
                         </div>
-                        <div class="chart-card">
-                            <h3>Crisis Events Monitored (6 Months)</h3>
-                            <canvas id="eventsChart"></canvas>
+                        <div class="info-card card-green">
+                            <h3><i class="fas fa-brain"></i> The Vision</h3>
+                            <p>To build a connected, intelligent "system of systems"—the ASAL Integrated Resource Management Platform—that centralizes data and uses AI to generate predictive, life-saving insights.</p>
                         </div>
-                        <div class="chart-card">
-                            <h3>Community Health Metrics</h3>
-                            <canvas id="healthChart"></canvas>
+                        <div class="info-card card-blue">
+                            <h3><i class="fas fa-cogs"></i> How It Works</h3>
+                            <p>Our GeoAI workflow transforms data from multiple sources into actionable intelligence, enabling dynamic mapping, AI-powered analytics, and automated alerts for frontline decision-makers.</p>
                         </div>
-                        <div class="chart-card">
-                            <h3>Infrastructure Status</h3>
-                            <canvas id="infraChart"></canvas>
+                        <div class="info-card card-green">
+                            <h3><i class="fas fa-bullseye"></i> Key Benefits</h3>
+                            <p>Achieve faster response times, enable proactive risk management, optimize resource allocation, and ultimately build more resilient and safer communities throughout Garissa County.</p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h2>Live Data Snapshot</h2>
+                        <p class="subtitle">A demonstration of real-time data feeding into the GeoAI platform.</p>
+                        <div class="mini-dashboard-grid">
+                            <div class="chart-card">
+                                <h3>Crisis Alert Status</h3>
+                                <canvas id="eventsChart"></canvas>
+                            </div>
+                            <div class="chart-card">
+                                <h3>Resource Deployment</h3>
+                                <canvas id="resourceChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -194,121 +157,42 @@
 
             <div id="blog" class="editor-pane">
                 <div class="content-container blog-content">
-                    <h1>A Promise in the Floodwaters...</h1>
-                    <p><em>By James Mukoma, Director of ICT, Garissa County & GeoAI Consultant</em></p>
-                    <hr>
-                    <p>I remember the feeling vividly: immense, paralyzing <strong>frustration</strong>. It was a frustration sharpened by the knowledge that we could do better...</p>
-                    <!-- Full blog content from previous version would be here -->
+                    <!-- Full blog content will be injected here by JS -->
                 </div>
             </div>
         </div>
         
         <div class="footer">
-            <div class="status-item"><i class="fas fa-sync-alt fa-spin"></i> STATUS: ALL SYSTEMS NOMINAL</div>
-            <div class="status-item" style="color: var(--vscode-green);">LAST UPDATE: <span id="last-update"></span></div>
-        </div>
-    </div>
-
-    <button id="chat-toggle"><i class="fas fa-robot"></i></button>
-    <div id="chat-container">
-        <div class="chat-header">GeoAI Assistant (Demo)</div>
-        <div class="chat-messages" id="chat-messages">
-            <div class="chat-message bot">Hello! I'm a demo chatbot. Ask me about "GeoAI", the "vision", or how to "partner".</div>
-        </div>
-        <div class="chat-input">
-            <input type="text" id="chat-input-field" placeholder="Ask a question...">
-            <button id="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
+            <div class="status-item"><i class="fas fa-check-circle" style="color: var(--vscode-green);"></i> Ready</div>
+            <div class="status-item">Garissa County GeoAI Initiative</div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Live Clock ---
-            const lastUpdateEl = document.getElementById('last-update');
-            const updateTime = () => {
-                lastUpdateEl.textContent = new Date().toLocaleTimeString();
-            };
-            setInterval(updateTime, 1000);
-            updateTime();
-
-            // --- Chart Config ---
-            Chart.defaults.color = 'rgba(224, 224, 224, 0.8)';
-            Chart.defaults.borderColor = 'rgba(224, 224, 224, 0.2)';
-            
-            // --- Dashboard Charts ---
-            const resourceCtx = document.getElementById('resourceChart').getContext('2d');
-            const resourceChart = new Chart(resourceCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Water & Sanitation', 'Healthcare', 'Logistics', 'Security'],
-                    datasets: [{
-                        label: 'Resource Allocation',
-                        data: [45, 25, 20, 10],
-                        backgroundColor: ['#00aaff', '#42f5b0', '#ffae57', '#ff6b6b'],
-                        borderWidth: 0,
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-            });
-
-            const eventsCtx = document.getElementById('eventsChart').getContext('2d');
-            const eventsChart = new Chart(eventsCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Crisis Events',
-                        data: [12, 19, 3, 5, 2, 3],
-                        borderColor: '#00c6ff',
-                        backgroundColor: 'rgba(0, 198, 255, 0.2)',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-
-            const healthCtx = document.getElementById('healthChart').getContext('2d');
-            const healthChart = new Chart(healthCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Vaccination Rate', 'Cholera Alerts', 'Nutrition Index'],
-                    datasets: [{
-                        label: 'Health Metrics',
-                        data: [85, 15, 72],
-                        backgroundColor: ['#42f5b0', '#ff6b6b', '#00aaff'],
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } } }
-            });
-
-            const infraCtx = document.getElementById('infraChart').getContext('2d');
-            const infraChart = new Chart(infraCtx, {
-                type: 'radar',
-                data: {
-                    labels: ['Power Grid', 'Water Supply', 'Telecom', 'Roads', 'Hospitals'],
-                    datasets: [{
-                        label: 'Operational Status',
-                        data: [92, 78, 88, 95, 82],
-                        fill: true,
-                        backgroundColor: 'rgba(255, 174, 87, 0.2)',
-                        borderColor: '#ffae57',
-                        pointBackgroundColor: '#ffae57',
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-
-            // Simulate live data updates
-            setInterval(() => {
-                // Update doughnut chart
-                resourceChart.data.datasets[0].data = resourceChart.data.datasets[0].data.map(d => d + (Math.random() - 0.5) * 2);
-                resourceChart.update();
-                // Update line chart
-                eventsChart.data.datasets[0].data.push(Math.floor(Math.random() * 20));
-                eventsChart.data.datasets[0].data.shift();
-                eventsChart.update();
-            }, 5000);
+            // --- Animated Background ---
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let particles = [];
+            class Particle {
+                constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2 + 1; this.speedX = Math.random() * 0.5 - 0.25; this.speedY = Math.random() * 0.5 - 0.25; this.color = 'rgba(86, 156, 214, 0.5)'; }
+                update() { if (this.x > canvas.width || this.x < 0) this.speedX *= -1; if (this.y > canvas.height || this.y < 0) this.speedY *= -1; this.x += this.speedX; this.y += this.speedY; }
+                draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+            }
+            function initParticles() { for (let i = 0; i < 50; i++) { particles.push(new Particle()); } }
+            function handleParticles() {
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update(); particles[i].draw();
+                    for (let j = i; j < particles.length; j++) {
+                        const distance = Math.sqrt(Math.pow(particles[i].x - particles[j].x, 2) + Math.pow(particles[i].y - particles[j].y, 2));
+                        if (distance < 120) { ctx.beginPath(); ctx.strokeStyle = `rgba(86, 156, 214, ${1 - distance/120})`; ctx.lineWidth = 0.3; ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke(); }
+                    }
+                }
+            }
+            function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); handleParticles(); requestAnimationFrame(animate); }
+            initParticles(); animate();
 
             // --- Tab functionality ---
             const tabs = document.querySelectorAll('.tab');
@@ -318,59 +202,50 @@
                     const targetPaneId = tab.getAttribute('data-tab');
                     tabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
-                    panes.forEach(pane => {
-                        pane.classList.toggle('active', pane.id === targetPaneId);
-                    });
+                    panes.forEach(pane => pane.classList.toggle('active', pane.id === targetPaneId));
                 });
             });
 
-            // --- Chatbot ---
-            const chatToggle = document.getElementById('chat-toggle');
-            const chatContainer = document.getElementById('chat-container');
-            const chatMessages = document.getElementById('chat-messages');
-            const chatInput = document.getElementById('chat-input-field');
-            const chatSendBtn = document.getElementById('chat-send-btn');
+            // --- Mini-Dashboard Charts ---
+            Chart.defaults.color = 'rgba(204, 204, 204, 0.9)';
+            Chart.defaults.font.family = '' + var(--font-body) + '';
 
-            chatToggle.addEventListener('click', () => chatContainer.classList.toggle('open'));
-
-            const botResponses = {
-                "geoai": "GeoAI is the fusion of Geospatial science and Artificial Intelligence. We use it to analyze location-based data, predict events like floods or disease outbreaks, and optimize resource deployment for a faster, more effective response.",
-                "vision": "The vision is to create a connected, intelligent future with the ASAL Integrated Resource Management Platform. We want to move from being reactive to proactive, using predictive insights for early warnings and to save lives.",
-                "partner": "We are actively seeking development partners, NGOs, and innovators who share this vision. You can connect with James Mukoma via the links in the 'Founder's Vision.md' tab to explore opportunities.",
-                "default": "I am a simple demo bot. I can tell you about our 'GeoAI', the 'vision', or how to 'partner'. For more complex questions, please refer to the project documentation or contact the team."
-            };
-
-            const handleChat = () => {
-                const userInput = chatInput.value.trim().toLowerCase();
-                if (!userInput) return;
-
-                appendMessage(userInput, 'user');
-                chatInput.value = '';
-
-                setTimeout(() => {
-                    let botReply = botResponses.default;
-                    for (const key in botResponses) {
-                        if (userInput.includes(key)) {
-                            botReply = botResponses[key];
-                            break;
-                        }
-                    }
-                    appendMessage(botReply, 'bot');
-                }, 500);
-            };
-
-            chatSendBtn.addEventListener('click', handleChat);
-            chatInput.addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') handleChat();
+            const resourceCtx = document.getElementById('resourceChart').getContext('2d');
+            const resourceChart = new Chart(resourceCtx, {
+                type: 'doughnut',
+                data: { labels: ['Healthcare', 'Water', 'Logistics'], datasets: [{ data: [45, 35, 20], backgroundColor: ['#4ec9b0', '#3A86FF', '#dcdcaa'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#ccc' } } } }
             });
 
-            function appendMessage(text, type) {
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `chat-message ${type}`;
-                msgDiv.textContent = text;
-                chatMessages.appendChild(msgDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+            const eventsCtx = document.getElementById('eventsChart').getContext('2d');
+            const eventsChart = new Chart(eventsCtx, {
+                type: 'bar',
+                data: { labels: ['Drought', 'Flood', 'Health'], datasets: [{ label: 'Active Alerts', data: [7, 4, 12], backgroundColor: ['#dcdcaa', '#3A86FF', '#4ec9b0'] }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#ccc' } }, x: { ticks: { color: '#ccc' } } } }
+            });
+
+            // Simulate live data
+            setInterval(() => {
+                eventsChart.data.datasets[0].data = eventsChart.data.datasets[0].data.map(d => Math.max(0, d + (Math.random() > 0.5 ? 1 : -1)));
+                eventsChart.update();
+            }, 4000);
+
+            // --- Inject Blog Content ---
+            const blogContainer = document.querySelector('#blog .blog-content');
+            blogContainer.innerHTML = `
+                <h1>A Promise in the Floodwaters: How a Cholera Outbreak Forged My Vision for a GeoAI-Powered Garissa</h1>
+                <p><em>By James Mukoma, Director of ICT, Garissa County & GeoAI Consultant</em></p><hr>
+                <p>I remember the feeling vividly: immense, paralyzing <strong>frustration</strong>. It was a frustration sharpened by the knowledge that we could do better. A flash flood in a remote sub-county had triggered a cholera outbreak, and as the Director of ICT for Garissa County, I was at the heart of the response. The first reports trickled in from a Community Health Worker via a standard phone call, days after the initial cases.</p>
+                <p>The reality of our response was a painful lesson in the cost of outdated systems.</p>
+                <h2>From Reaction to Prediction: The GeoAI Imperative</h2>
+                <p>In the days that followed, a single question burned in my mind: <strong>What if we could have seen it coming?</strong></p>
+                <blockquote>That moment starkly illustrated that without reliable, real-time data and connected systems, public administration, no matter how dedicated its people, will always be a step behind a crisis. This is where my work in GeoAI—the fusion of Geospatial science and Artificial Intelligence—transforms from a technical specialty into a moral imperative.</blockquote>
+                <h2>A Call to Co-Create Our Future</h2>
+                <p>My work is dedicated to building those connections. The <strong>ASAL IRM Platform</strong> is more than a project; it is a promise to our people that we will harness the best of technology to build a safer, more resilient, and sustainable future for Garissa and beyond.</p>
+                <hr><p><strong>Connect with me:</strong><br>
+                <a href="mailto:jmsmuigai@gmail.com"><i class="fas fa-envelope"></i> Email</a> | 
+                <a href="https://www.linkedin.com/in/james-mukoma-86534438/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a> | 
+                <a href="https://github.com/jmsmuigai" target="_blank"><i class="fab fa-github"></i> GitHub</a></p>`;
         });
     </script>
 </body>
